@@ -16,6 +16,10 @@ Laravelで作成したシンプルな掲示板アプリです。
 - MySQL
 - Docker（Laravel Sail）
 
+## 画面イメージ
+
+![一覧画面](images/sample.png)
+
 ## 環境構築
 
 ```bash
@@ -34,8 +38,6 @@ composer install
 
 ※Laravel Sail（Docker）を使用していますが、ローカル環境でも動作可能です。
 
-## 画面イメージ
 
-![一覧画面](https://raw.githubusercontent.com/masaru1123/laravel-bbs/main/images/sample.png)
 
 ```
