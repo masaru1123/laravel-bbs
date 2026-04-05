@@ -36,6 +36,6 @@ composer install
 
 ## 画面イメージ
 
-![一覧画面](https://github.com/masaru1123/laravel-bbs/blob/main/images/sample.png)
+![一覧画面](https://raw.githubusercontent.com/masaru1123/laravel-bbs/main/images/sample.png)
 
 ```
