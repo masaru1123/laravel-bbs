@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Comment;
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
@@ -19,10 +20,11 @@ class PageController extends Controller
         ]);
 
         Comment::create([
-            'content' => $request->input('content')
+            'content' => $request->input('content'),
+            'user_id' => Auth::id()
         ]);
 
-        return redirect('/list');
+        return redirect('/');
     }
 
     public function list() 
@@ -33,14 +35,25 @@ class PageController extends Controller
 
     public function delete($id)
     {
-        Comment::findOrFail($id)->delete();
+        $comment = Comment::findOrFail($id);
 
-        return redirect('/list');
+        if ($comment->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $comment->delete();
+
+        return redirect('/');
     }
 
     public function edit($id)
     {
         $comment = Comment::findOrFail($id);
+
+        if ($comment->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         return view('comments.edit', compact('comment'));
     }
 
@@ -51,9 +64,13 @@ class PageController extends Controller
         ]);
 
         $comment = Comment::findOrFail($id);
+
+        if ($comment->user_id !== Auth::id()) {
+            abort(403);
+        }
         $comment->content = $request->content;
         $comment->save();
 
-        return redirect('/list');
+        return redirect('/');
     }
 }

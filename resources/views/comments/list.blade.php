@@ -17,6 +17,25 @@
             border-radius: 8px;
         }
 
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .header .logout-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .header .logout-btn:hover {
+            text-decoration: underline;
+        }
+
         h1 {
             text-align: center;
         }
@@ -38,7 +57,6 @@
         .comment-time {
             font-size: 12px;
             color: #888;
-            margin-bottom: 5px;
         }
 
         .comment-text {
@@ -61,22 +79,6 @@
             align-items: center;
         }
 
-        .delete-btn {
-            font-size: 12px;
-            padding: 2px 6px;
-            background: #171616ff;
-            color: #fff;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .actions {
             display: flex;
             gap: 5px;
@@ -85,13 +87,13 @@
         .edit-link {
             font-size: 12px;
             text-decoration: none;
-            color: #171819ff;
+            color: #171819;
         }
 
         .delete-btn {
             font-size: 12px;
             padding: 2px 6px;
-            background: #171819ff;
+            background: #171819;
             color: #fff;
             border: none;
             border-radius: 3px;
@@ -99,11 +101,30 @@
         }
     </style>
 
-
 </head>
 <body>
 
 <div class="container">
+
+<!-- ① 右上ログイン導線 -->
+<div class="header">
+
+    @auth
+        <!-- 左：ログインの位置 → ユーザー名 -->
+        <span>{{ Auth::user()->name }}</span>
+
+        <!-- 右：新規登録の位置 → ログアウト -->
+        <form method="POST" action="/logout" style="display:inline;">
+            @csrf
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    @else
+        <!-- 未ログイン -->
+        <a href="/login">ログイン</a>
+        <a href="/register">新規登録</a>
+    @endauth
+
+</div>
 
 <h1>掲示板</h1>
 
@@ -117,19 +138,20 @@
                 {{ $comment->created_at->format('Y/m/d H:i') }}
             </div>
 
-            <div class="actions">
-                <a href="/edit/{{ $comment->id }}" class="edit-link">
-                    編集
-                </a>
+            <!-- ② 自分だけ編集削除 -->
+            @auth
+                @if ($comment->user_id === Auth::id())
+                    <div class="actions">
+                        <a href="/edit/{{ $comment->id }}" class="edit-link">編集</a>
 
-                <form action="/delete/{{ $comment->id }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button class="delete-btn" onclick="return confirm('削除する？')">
-                        削除
-                    </button>
-                </form>
-            </div>
+                        <form action="/delete/{{ $comment->id }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button class="delete-btn">削除</button>
+                        </form>
+                    </div>
+                @endif
+            @endauth
 
         </div>
 
@@ -140,17 +162,18 @@
     </div>
 @endforeach
 
-<!--下線 -->
 <hr>
 
-<!-- 投稿フォーム -->
-<form method="POST" action="/submit">
-    @csrf
-    <textarea name="content"></textarea>
-    <button type="submit">送信</button>
-</form>
+<!-- ③ 投稿フォーム（ログイン限定） -->
+@auth
+    <form method="POST" action="/submit">
+        @csrf
+        <textarea name="content"></textarea>
+        <button type="submit">送信</button>
+    </form>
+@endauth
 
-
+</div>
 
 </body>
 </html>
