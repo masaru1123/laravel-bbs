@@ -9,16 +9,14 @@ Laravelで作成したシンプルな掲示板アプリです。
 - 一覧表示
 - 編集
 - 削除
+- ユーザー登録・ログイン機能（Laravel Breeze）
+- 投稿とユーザーの紐付け
 
 ## 使用技術
 - PHP
 - Laravel
 - MySQL
 - Docker（Laravel Sail）
-
-## 画面イメージ
-
-![一覧画面](images/sample.png)
 
 ## 環境構築
 
